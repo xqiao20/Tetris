@@ -1,7 +1,7 @@
-package TetrisView;
+package TetrisCommon;
 
 public enum STATE {
-    GAME,
+    GAMEVIEW,
     STARTVIEW,
     TOPSCORES,
     ENDVIEW

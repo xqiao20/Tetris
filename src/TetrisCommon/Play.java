@@ -1,4 +1,4 @@
-package TetrisModel;
+package TetrisCommon;
 import TetrisController.Controller;
 import TetrisView.StartView;
 import javax.swing.JFrame;

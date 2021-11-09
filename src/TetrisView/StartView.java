@@ -1,9 +1,8 @@
 package TetrisView;
 
-import TetrisController.*;
-import TetrisModel.Player;
-import TetrisModel.Shape;
-import TetrisModel.Piece;
+import TetrisCommon.*;
+import TetrisCommon.Shape;
+import TetrisController.Controller;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +13,7 @@ import java.util.Random;
 
 public class StartView extends JPanel implements ViewInterface {
     public static final int WIDTH = 600;
-    public static final int HEIGHT = 500;
+    public static final int HEIGHT = 650;
 
     public static final int WIDTHRECT = 200;
     public static final int HEIGHTRECT = 50;
@@ -34,14 +33,15 @@ public class StartView extends JPanel implements ViewInterface {
 
     private int pieceStartY = -50;
     private int startY = 140;
-    private int gap = 60;
+    private int gap = 80;
     public boolean darkMode;
 
     Font font = new Font("sansserif", Font.BOLD, 22);
     Font smallFont = new Font("sansserif", Font.PLAIN, 16);
 
 
-    public Rectangle[] buttons = {new Rectangle((WIDTH - WIDTHRECT)/2, startY, WIDTHRECT, HEIGHTRECT),
+    public Rectangle[] buttons = {
+            new Rectangle((WIDTH - WIDTHRECT)/2, startY, WIDTHRECT, HEIGHTRECT),
             new Rectangle((WIDTH - WIDTHRECT)/2, startY + gap, WIDTHRECT, HEIGHTRECT),
             new Rectangle((WIDTH - WIDTHRECT)/2, startY + 2*gap, WIDTHRECT, HEIGHTRECT),
             new Rectangle((WIDTH - WIDTHRECT)/2, startY + 3*gap, WIDTHRECT, HEIGHTRECT)};
@@ -68,14 +68,17 @@ public class StartView extends JPanel implements ViewInterface {
     public StartView(){
         mousePosition = new Point(0, 0);
         square = new ImageLoader(ImageLoader.squarePath);
-        init();
     }
 
+    public void playGame(){
+        Controller.switchState(STATE.GAMEVIEW);
+    }
 
     public int center(Graphics g, String text){
         return WIDTH/2 - g.getFontMetrics().stringWidth(text)/2;
     }
 
+    @Override
     public void init() {
         random = new Random();
         isRun = true;
@@ -85,6 +88,7 @@ public class StartView extends JPanel implements ViewInterface {
     }
 
     //TODO
+    @Override
     public void tick() {
         int chance;
         chance = random.nextInt(3);
@@ -122,6 +126,8 @@ public class StartView extends JPanel implements ViewInterface {
         g.drawString("Github", center(g, "Github"), buttons[3].y + paddingWidth*5/3);
     }
 
+
+
     public void drawBackground(Graphics g){
         int dark = darkMode ? 1: 0;
         g.setColor(backgroundColor[dark]);
@@ -151,11 +157,16 @@ public class StartView extends JPanel implements ViewInterface {
         g.setFont(font);
     }
     @Override
-    public void render(Graphics g, int[][] gameState, Player player) {
+    public void render(Graphics g) {
         drawBackground(g);
         drawButton(g);
         drawString(g);
 
+    }
+
+    @Override
+    public void goBack() {
+        Controller.switchState(STATE.TOPSCORES);
     }
 
     public void visitSite(){

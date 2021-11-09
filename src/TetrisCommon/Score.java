@@ -1,9 +1,10 @@
-package TetrisModel;
+package TetrisCommon;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Score {

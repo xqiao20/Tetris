@@ -1,17 +1,16 @@
 package TetrisController;
 
-import TetrisModel.BasicModel;
-import TetrisView.STATE;
-import TetrisView.Game;
+import TetrisCommon.STATE;
+import TetrisModel.GameModel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
-    BasicModel model;
+    GameModel gameModel;
 
-    public KeyHandler(BasicModel model){
-        this.model = model;
+    public KeyHandler(GameModel gameModel){
+        this.gameModel = gameModel;
     }
 
     @Override
@@ -21,24 +20,23 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(Controller.state == STATE.GAME && !model.isLost){
+        if(Controller.state == STATE.GAMEVIEW && !gameModel.isLost && !gameModel.autoplay){
             if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W){
-                model.rotatePiece();
+                gameModel.rotatePiece();
             }
             else if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A){
-                model.moveLeft();
+                gameModel.moveLeft();
             }
             else if(e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D){
-                model.moveRight();
+                gameModel.moveRight();
             }
             else if(e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S){
-                model.updateBlockPosition(true, true);
+                gameModel.updateBlockPosition(true, true);
             }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-
     }
 }

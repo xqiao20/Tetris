@@ -1,8 +1,8 @@
-package TetrisModel;
+package TetrisCommon;
 
 public class Player {
-    final static int GAP = 10;
-    final static int HIGHESTLEVEL = 10;
+    final static int GAP = 30;
+    final static int HIGHESTLEVEL = 3;
     final static int[] scoreCoefficient = {0, 40, 100, 300, 1200};
     private int score;
     private int level;

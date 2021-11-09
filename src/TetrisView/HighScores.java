@@ -1,8 +1,9 @@
 package TetrisView;
 
 import TetrisController.Controller;
-import TetrisModel.Player;
-import TetrisModel.Score;
+import TetrisCommon.STATE;
+import TetrisCommon.Score;
+import TetrisCommon.ViewInterface;
 
 import java.awt.*;
 
@@ -36,9 +37,13 @@ public class HighScores implements ViewInterface {
         scores = Score.readFile(Score.TOPSCOREPATH);
     }
 
+    @Override
+    public void tick() {
+
+    }
 
     @Override
-    public void render(Graphics g, int[][] gameState, Player player){
+    public void render(Graphics g){
         int dark = darkMode ? 1: 0;
         g.setColor(backgroundColor[dark]);
         g.fillRect(0, 0, width, height);
@@ -63,5 +68,9 @@ public class HighScores implements ViewInterface {
         g.drawRoundRect(button.x, button.y, button.width, button.height, arcSize, arcSize);
     }
 
+    @Override
+    public void goBack() {
+        Controller.switchState(STATE.STARTVIEW);
+    }
 
 }

@@ -1,16 +1,19 @@
 package TetrisController;
 
-import TetrisModel.BasicModel;
-import TetrisView.STATE;
-import TetrisModel.Score;
+import TetrisAI.AutoListener;
+import TetrisAI.Responder;
+import TetrisCommon.*;
+import TetrisModel.GameModel;
 import TetrisView.EndView;
-import TetrisView.Game;
+import TetrisView.GameView;
 import TetrisView.HighScores;
 import TetrisView.StartView;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Controller extends JPanel implements Runnable {
     public int width = StartView.WIDTH;
@@ -23,14 +26,14 @@ public class Controller extends JPanel implements Runnable {
     private Thread thread;
 
     private static StartView startView;
-    private static Game game;
+    private static GameView gameView;
     private static HighScores topScores;
     private static EndView endView;
-    public BasicModel model;
-
+    private static GameModel gameModel;
     public static int currentScore = 0;
     private static int fontSize = 20;
-    private int waitTime = 150;
+    private int waitTime = 450;
+    private List<AutoListener> listeners = new ArrayList<AutoListener>();
 
     Font largeFont = new Font("TimesRoman", Font.PLAIN, fontSize);
 
@@ -41,17 +44,6 @@ public class Controller extends JPanel implements Runnable {
         setPreferredSize(new Dimension(width, height));
         setFocusable(true);
         requestFocus(true);
-        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        g = (Graphics2D) image.getGraphics();
-        startView = new StartView();
-        game = new Game();
-        topScores = new HighScores();
-        endView = new EndView();
-        model = new BasicModel();
-
-        this.addMouseListener(new MouseHandler(model));
-        this.addMouseMotionListener(new MouseMotion(model));
-        this.addKeyListener(new KeyHandler(model));
     }
 
     public void addNotify(){
@@ -62,15 +54,35 @@ public class Controller extends JPanel implements Runnable {
         }
     }
 
+    public void init(){
+        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        g = (Graphics2D) image.getGraphics();
+        this.gameModel = new GameModel();
+        startView = new StartView();
+        gameView = new GameView(gameModel);
+        topScores = new HighScores();
+        endView = new EndView();
+        startView.init();
+        Score.init();
+
+        this.addMouseListener(new MouseHandler(startView, gameView, topScores, endView, gameModel));
+        this.addMouseMotionListener(new MouseMotion(startView, gameView, topScores, endView, gameModel));
+        this.addKeyListener(new KeyHandler(gameModel));
+        System.out.println("add new ...");
+        listeners.add(new Responder(gameModel));
+    }
 
     @Override
     public void run() {
-        new Controller();
+        init();
+        int i = 0;
         while(isRun){
             render();
             try{
                 Thread.sleep(waitTime);
                 tick();
+                for (AutoListener hl : listeners)
+                    hl.autoPlay();
             }catch(Exception e){
 
             }
@@ -78,30 +90,24 @@ public class Controller extends JPanel implements Runnable {
     }
 
     public void tick(){
-        if(state == STATE.GAME){
-            model.stateCheck();
+        if(state == STATE.GAMEVIEW){
+            gameModel.tick();
         }
     }
 
-    public void updateScore(){
-        if(model.gameOver()){
-            currentScore = model.player.getScore();
-            model.switchState(STATE.ENDVIEW);
-        }
-    }
     public void render(){
         switch(state){
             case STARTVIEW:
-                startView.render(g, model.gameState, model.player);
+                startView.render(g);
                 break;
-            case GAME:
-                game.render(g, model.gameState, model.player);
+            case GAMEVIEW:
+                gameView.render(g);
                 break;
             case TOPSCORES:
-                topScores.render(g, model.gameState, model.player);
+                topScores.render(g);
                 break;
             case ENDVIEW:
-                endView.render(g, model.gameState, model.player);
+                endView.render(g);
         }
 
         Graphics anotherG = getGraphics();
@@ -109,9 +115,21 @@ public class Controller extends JPanel implements Runnable {
         anotherG.dispose();
     }
 
+    public static void switchState(STATE gameState){
+        state = gameState;
+        switch (state){
+            case STARTVIEW:
+                startView.init();
+                break;
+            case GAMEVIEW:
+                gameModel.start();
+                break;
+            case TOPSCORES:
+                topScores.init();
+                break;
+            case ENDVIEW:
+                endView.init();
 
-    private int speed = 1100;
-    private int timeGap = 100;
-
-
+        }
+    }
 }

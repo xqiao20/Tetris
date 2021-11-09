@@ -1,15 +1,27 @@
 package TetrisController;
 
-import TetrisModel.BasicModel;
-import TetrisView.*;
+import TetrisModel.GameModel;
+import TetrisView.EndView;
+import TetrisView.GameView;
+import TetrisView.HighScores;
+import TetrisView.StartView;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class MouseHandler implements MouseListener {
-    public BasicModel model;
-    public MouseHandler(BasicModel model){
-        this.model = model;
+    StartView startView;
+    GameView gameView;
+    HighScores topScores;
+    EndView endView;
+    GameModel gameModel;
+
+    public MouseHandler(StartView startView, GameView gameView, HighScores topScores, EndView endView, GameModel gameModel){
+        this.startView = startView;
+        this.gameView = gameView;
+        this.topScores = topScores;
+        this.endView = endView;
+        this.gameModel = gameModel;
     }
 
 
@@ -25,44 +37,48 @@ public class MouseHandler implements MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        switch (model.state){
+        switch (Controller.state){
             case STARTVIEW:
-                if(model.startView.buttons[0].contains(e.getPoint())){
-                    model.isRun = false;
-                    model.switchState(STATE.GAME);
+                if(startView.buttons[0].contains(e.getPoint())){
+                    startView.isRun = false;
+                    startView.playGame();
                 }
-                else if(model.startView.buttons[1].contains(e.getPoint())){
-                    model.startView.isRun = false;
-                    model.switchState(STATE.TOPSCORES);
+                else if(startView.buttons[1].contains(e.getPoint())){
+                    startView.isRun = false;
+                    startView.goBack();
                 }
-                else if(model.startView.buttons[2].contains(e.getPoint())){
-                    model.darkMode = !model.darkMode;
+                else if(startView.buttons[2].contains(e.getPoint())){
+                    startView.darkMode = !startView.darkMode;
+                    gameModel.darkMode = !gameModel.darkMode;
                 }
-                else if(model.startView.buttons[3].contains(e.getPoint())){
-                    model.isRun = false;
-                    model.startView.visitSite();
+                else if(startView.buttons[3].contains(e.getPoint())){
+                    startView.isRun = false;
+                    startView.visitSite();
                 }
                 break;
-            case GAME:
-                if(model.game.buttons[0].contains(e.getPoint())){
-                    model.clearGame();
+            case GAMEVIEW:
+                if(gameView.buttons[0].contains(e.getPoint())){
+                    gameModel.clearGame();
                 }
-                else if(model.game.buttons[1].contains(e.getPoint())){
-                    model.game.showGuide = !model.game.showGuide;
+                else if(gameView.buttons[1].contains(e.getPoint())){
+                    gameModel.autoplay = !gameModel.autoplay;
                 }
-                else if(model.game.buttons[2].contains(e.getPoint())){
-                    model.isRun = false;
-                    model.switchState(STATE.STARTVIEW);
+                else if(gameView.buttons[2].contains(e.getPoint())){
+                    gameModel.showGuide = !gameModel.showGuide;
+                }
+                else if(gameView.buttons[3].contains(e.getPoint())){
+                    gameModel.isRun = false;
+                    gameModel.goBack();
                 }
                 break;
             case TOPSCORES:
-                if(model.topScores.button.contains(e.getPoint())){
-                    model.switchState(STATE.STARTVIEW);
+                if(topScores.button.contains(e.getPoint())){
+                    topScores.goBack();
                 }
                 break;
             case ENDVIEW:
-                if(model.endView.button.contains(e.getPoint())){
-                    model.switchState(STATE.STARTVIEW);
+                if(endView.button.contains(e.getPoint())){
+                    endView.goBack();
                 }
         }
 

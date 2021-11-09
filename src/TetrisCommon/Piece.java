@@ -1,12 +1,9 @@
-package TetrisModel;
-
-import TetrisView.Game;
+package TetrisCommon;
 
 public class Piece {
     private int x;
     private int y;
     private int[][] shape;
-
     public Piece(int x, int y, int[][] shape){
         this.x = x;
         this.y = y;
@@ -33,15 +30,17 @@ public class Piece {
         this.y = y;
     }
 
-    public void plusY(){
-        this.y++;
+    public void plusX(){
+        this.x++;
     }
 
-    public int getWidth(){
+    //width -> column
+    //height -> row
+    public int getHeight(){
         return this.shape.length;
     }
 
-    public int getHeight(){
+    public int getWidth(){
         if(this.shape.length == 0)
             return 0;
         return this.shape[0].length;
@@ -53,7 +52,7 @@ public class Piece {
         if(this.x + n <= gameState.length && this.y + m <= gameState[0].length){
             for(int i = 0; i < n; i++){
                 for(int j = 0; j < m; j++){
-                    if(gameState[x + i][y + j] > 0){
+                    if(gameState[this.x + i][this.y + j] > 0){
                         rotatable = false;
                     }
                 }
@@ -64,18 +63,17 @@ public class Piece {
         }
         return rotatable;
     }
-    public void rotate(int[][] gameState){
-        if(canRotate(gameState)) {
-            int m = shape.length;
-            int n = shape[0].length;
-            int[][] res = new int[n][m];
 
-            for (int i = 0; i < m; i++) {
-                for (int j = 0; j < n; j++) {
-                    res[j][m - 1 - i] = shape[i][j];
-                }
+    public void rotate(){
+        int m = shape.length;
+        int n = shape[0].length;
+        int[][] res = new int[n][m];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                res[j][m - 1 - i] = shape[i][j];
             }
-            this.shape = res;
         }
+        this.shape = res;
     }
 }

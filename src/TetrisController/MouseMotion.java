@@ -1,8 +1,9 @@
 package TetrisController;
 
-import TetrisModel.BasicModel;
+import TetrisController.Controller;
+import TetrisModel.GameModel;
 import TetrisView.EndView;
-import TetrisView.Game;
+import TetrisView.GameView;
 import TetrisView.HighScores;
 import TetrisView.StartView;
 
@@ -10,9 +11,18 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 public class MouseMotion implements MouseMotionListener {
-    BasicModel model;
-    public MouseMotion(BasicModel model){
-        this.model = model;
+    StartView startView;
+    GameView gameView;
+    HighScores topScores;
+    EndView endView;
+    GameModel gameModel;
+
+    public MouseMotion(StartView startView, GameView gameView, HighScores topScores, EndView endView, GameModel gameModel){
+        this.startView = startView;
+        this.gameView = gameView;
+        this.topScores = topScores;
+        this.endView = endView;
+        this.gameModel = gameModel;
     }
 
     @Override
@@ -24,20 +34,21 @@ public class MouseMotion implements MouseMotionListener {
     public void mouseMoved(MouseEvent e) {
         switch (Controller.state){
             case STARTVIEW:
-                model.startView.mousePosition.x = e.getX();
-                model.startView.mousePosition.y = e.getY();
+                startView.mousePosition.x = e.getX();
+                startView.mousePosition.y = e.getY();
                 break;
-            case GAME:
-                model.game.mousePosition.x = e.getX();
-                model.game.mousePosition.y = e.getY();
+            case GAMEVIEW:
+                gameView.mousePosition.x = e.getX();
+                gameView.mousePosition.y = e.getY();
                 break;
             case TOPSCORES:
-                model.topScores.mousePosition.x = e.getX();
-                model.topScores.mousePosition.y = e.getY();
+                topScores.mousePosition.x = e.getX();
+                topScores.mousePosition.y = e.getY();
                 break;
             case ENDVIEW:
-                model.endView.mousePosition.x = e.getX();
-                model.endView.mousePosition.y = e.getY();
+                endView.mousePosition.x = e.getX();
+                endView.mousePosition.y = e.getY();
+
         }
     }
 }

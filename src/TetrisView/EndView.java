@@ -1,8 +1,9 @@
 package TetrisView;
 
 import TetrisController.Controller;
-import TetrisModel.Player;
-import TetrisModel.Score;
+import TetrisCommon.STATE;
+import TetrisCommon.Score;
+import TetrisCommon.ViewInterface;
 
 import java.awt.*;
 
@@ -28,9 +29,18 @@ public class EndView implements ViewInterface {
         mousePosition = new Point(0, 0);
     }
 
+    @Override
+    public void init() {
+        checkScore();
+    }
 
     @Override
-    public void render(Graphics g, int[][] gameState, Player player) {
+    public void tick() {
+
+    }
+
+    @Override
+    public void render(Graphics g) {
         int dark = darkMode ? 1: 0;
         g.setColor(backgroundColor[dark]);
         g.fillRect(0, 0, width, height);
@@ -51,6 +61,10 @@ public class EndView implements ViewInterface {
         g.drawString("Main Menu", width/2 - g.getFontMetrics().stringWidth("Main Menu")/2, button.y + buttonHeight*2/3);
     }
 
+    @Override
+    public void goBack() {
+        Controller.switchState(STATE.STARTVIEW);
+    }
 
     public void checkScore(){
         int[] score = Score.readFile(Score.TOPSCOREPATH);
